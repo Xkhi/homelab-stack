@@ -1,0 +1,85 @@
+---
+services:
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    depends_on:
+      - prowlarr
+      - torrent
+    networks:
+      - localnet
+    env_file: ../environment.env
+    volumes:
+      - ${CONFIG}/sonarr:/config:rw
+      - ${ANIME}:/anime:rw
+      - ${SHOWS}:/shows:rw
+      - ${DOWNLOADS}:/downloads:rw
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+    labels:
+      # Traefik setup
+      - traefik.enable=true
+      - traefik.http.routers.sonarr.rule=Host(`sonarr.${FQDN}`) || Host(`sonarr.${VPN}`)
+      - traefik.http.routers.sonarr.tls=true
+      # Homepage setup
+      - homepage.group=Video
+      - homepage.name=Sonarr
+      - homepage.icon=sonarr.png
+      - homepage.href=https://sonarr.${FQDN}/
+      - homepage.widget.type=sonarr
+      - homepage.widget.url=http://${HOST_IP}:8989
+      - homepage.widget.key=${SONARR_TOKEN}
+
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    depends_on:
+      - prowlarr
+      - torrent
+    networks:
+      - localnet
+    env_file: ../environment.env
+    volumes:
+      - ${CONFIG}/radarr:/config:rw
+      - ${MOVIES}:/movies:rw
+      - ${DOWNLOADS}:/downloads:rw
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    labels:
+      # Traefik setup
+      - traefik.enable=true
+      - traefik.http.routers.radarr.rule=Host(`radarr.${FQDN}`) || Host(`radar.${VPN}`)
+      - traefik.http.routers.radarr.tls=true
+      # Homepage setup
+      - homepage.group=Video
+      - homepage.name=Radarr
+      - homepage.icon=radarr.png
+      - homepage.href=https://radarr.${FQDN}/
+      - homepage.widget.type=radarr
+      - homepage.widget.url=http://${HOST_IP}:7878
+      - homepage.widget.key=${RADARR_TOKEN}
+  
+  prowlarr:
+    container_name: prowlarr
+    image: linuxserver/prowlarr:latest
+    env_file: ../environment.env
+    depends_on:
+      - torrent
+    networks:
+      - localnet
+    ports:
+      - 9696:9696
+    volumes:
+      - ${CONFIG}/prowlarr:/config
+    labels:
+      # Traefik setup
+      - traefik.enable=true
+      - traefik.http.routers.prowlarr.rule=Host(`prowlarr.${FQDN}`)
+      - traefik.http.routers.prowlarr.tls=true
+      # Homepage setup
+      - homepage.group=Video
+      - homepage.name=Prowlarr
+      - homepage.icon=prowlarr.png
+      - homepage.href=https://prowlarr.${FQDN}/

@@ -1,0 +1,20 @@
+---
+name: homeserver
+include:
+  - services/video-services/docker-compose.yaml
+  - services/torrent/docker-compose.yaml
+  - services/homepage/docker-compose.yaml
+  - services/watchtower/docker-compose.yaml
+  - services/portainer/docker-compose.yaml
+  - services/traefik/docker-compose.yaml
+  - services/adguardhome/docker-compose.yaml
+  - services/kavita/docker-compose.yaml
+  - services/mealie/docker-compose.yaml
+  - services/photoprism/docker-compose.yaml
+  - services/plex/docker-compose.yaml
+  - services/stirling/docker-compose.yaml
+
+networks:
+  localnet:
+    name: localnet
+    driver: bridge

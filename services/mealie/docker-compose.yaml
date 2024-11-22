@@ -1,0 +1,58 @@
+---
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:v2.2.0
+    container_name: mealie
+    networks:
+      - localnet
+    depends_on: 
+      - mealie-db
+    ports:
+        - 9000:9000
+    volumes:
+      - mealie-data:/app/data/
+    env_file: ../environment.env
+    environment:
+    # Set Backend ENV Variables Here
+      - ALLOW_SIGNUP=true
+      - MAX_WORKERS=1
+      - WEB_CONCURRENCY=1
+      - BASE_URL=https://mealie.${FQDN}
+    # Database settings
+      - DB_ENGINE=postgres
+      - POSTGRES_USER=mealie
+      - POSTGRES_PASSWORD=mealie
+      - POSTGRES_SERVER=mealie-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=mealie
+
+    restart: unless-stopped
+    labels:
+      # Traefik Setup
+      - traefik.enable=true
+      - traefik.http.routers.mealie.rule=Host(`mealie.${FQDN}`)  || Host(`mealie.${VPN}`)
+      - traefik.http.routers.mealie.tls=true
+      - traefik.http.routers.mealie.tls.certresolver=default
+      # Homepage setup
+      - homepage.group=Home
+      - homepage.name=Mealie
+      - homepage.icon=mealie.png
+      - homepage.href=https://mealie.${FQDN}/
+
+  mealie-db:
+    image: postgres:16-alpine
+    container_name: mealie-db
+    restart: unless-stopped
+    networks:
+      - localnet
+    volumes:
+      - mealie-dbdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mealie
+      POSTGRES_USER: mealie
+
+volumes:
+  mealie-data:
+    name: docker-compose_mealie-data
+  mealie-dbdata:
+    name: docker-compose_mealie-dbdata

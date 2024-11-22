@@ -1,0 +1,26 @@
+services:
+  stirling-pdf:
+    image: frooodle/s-pdf:latest
+    container_name: stirling
+    networks:
+      - localnet
+    ports:
+      - '8181:8080'
+    volumes:
+      - ./trainingData:/usr/share/tessdata #Required for extra OCR languages
+      - ./extraConfigs:/configs
+    environment:
+      - DOCKER_ENABLE_SECURITY=false
+      - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=false
+      - LANGS=en_GB
+    labels:
+      # Traefik Setup
+      - traefik.enable=true
+      - traefik.http.routers.pdf.rule=Host(`pdf.${FQDN}`)
+      - traefik.http.routers.pdf.tls=true
+      - traefik.http.routers.pdf.tls.certresolver=default
+      # Homepage setup
+      - homepage.group=Home
+      - homepage.name=Stirling PDF
+      - homepage.icon=stirling-pdf.png
+      - homepage.href=https://pdf.${FQDN}/

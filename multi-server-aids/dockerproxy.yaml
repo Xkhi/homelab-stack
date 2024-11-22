@@ -1,0 +1,25 @@
+services:
+  dockerproxy:
+    image: ghcr.io/tecnativa/docker-socket-proxy:latest
+    restart: always
+    container_name: dockerproxy
+    networks:
+      - localnet
+    environment:
+      - CONTAINERS=1
+      - POST=0
+    ports:
+      - 2375:2375
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  traefik-kop:
+    image: "ghcr.io/jittering/traefik-kop:latest"
+    restart: unless-stopped
+    networks:
+      - localnet
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - "REDIS_ADDR=${HOST_IP}:6379"
+      - "BIND_IP=${HOST_IP}"

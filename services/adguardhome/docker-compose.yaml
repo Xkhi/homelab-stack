@@ -1,0 +1,22 @@
+---
+services:
+  adguardhome:
+    container_name: adguardhome
+    image: adguard/adguardhome:latest
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - adguard:/opt/adguardhome
+    labels:
+      - homepage.group=Network & System
+      - homepage.name=AdGuardHome
+      - homepage.icon=adguard-home.png
+      - homepage.href=http://adguard.${FQDN}/
+      - homepage.widget.type=adguard
+      - homepage.widget.url=http://${HOST_IP}:80
+      - homepage.widget.username=${ADMIN_USER}
+      - homepage.widget.password=${ADMIN_PASSWORD}
+
+volumes:
+  adguard:
+    name: adguard

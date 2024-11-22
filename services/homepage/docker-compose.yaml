@@ -1,0 +1,17 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    networks:
+      - localnet
+    ports:
+      - 3001:3000
+    volumes:
+      - ${CONFIG}/homepage:/app/config # Make sure your local config directory exists
+      - ${CONFIG}/images/background.png:/app/public/images/background.png:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+    labels:
+      # Traefik setup
+      - traefik.enable=true
+      - traefik.http.routers.homepage.rule=Host(`home.${FQDN}`)  || Host(`home.${VPN}`)
+      - traefik.http.routers.homepage.tls=true
