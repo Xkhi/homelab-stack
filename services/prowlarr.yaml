@@ -1,0 +1,19 @@
+---
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:latest
+    env_file: .env
+    restart: unless-stopped
+    networks:
+      - localnet
+    ports:
+      - 9696:9696
+    volumes:
+      - ${CONFIG}/prowlarr:/config
+    labels:
+      # Homepage setup
+      - homepage.group=Video
+      - homepage.name=Prowlarr
+      - homepage.icon=prowlarr.png
+      - homepage.href=${{ HREF }}

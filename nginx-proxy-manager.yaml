@@ -1,0 +1,33 @@
+---
+name: NGINX
+services:
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    container_name: nginx
+    environment:
+      - TZ='Europe/Stockholm'
+    networks:
+      - optiplex_default
+      - nordvpn_default
+    ports:
+      - 80:80
+      - 443:443
+      - 81:81
+    volumes:
+      - ${CONFIG}/npm/data:/data
+      - ${CONFIG}/npm/letsencrypt:/etc/letsencrypt
+      - ${CONFIG}/npm/snippets:/snippets
+    labels:
+      - homepage.group=Network & System
+      - homepage.name=NPM
+      - homepage.icon=nginx-proxy-manager.png
+      - homepage.href=http://npm.mentita.men/
+      - vpn.app.name=nginx-proxy-manager
+      - vpn.app.port=81
+
+networks:
+  optiplex_default:
+    external: true
+  nordvpn_default:
+    external: true

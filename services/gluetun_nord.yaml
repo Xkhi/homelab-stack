@@ -1,0 +1,76 @@
+---
+name: nordvpn
+services:
+  nordvpn:
+    container_name: nordvpn
+    image: qmcgaw/gluetun:latest
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - VPN_SERVICE_PROVIDER=nordvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=${{ OPENVPN_USER }}
+      - OPENVPN_PASSWORD=${{ OPENVPN_PASSWORD }}
+      - SERVER_CATEGORIES=p2p
+    ports:
+      - 3000:3000
+      - 3030:3001
+      - 9696:9696
+      - 8080:8080
+      - 6881:6881
+
+  chromium:
+    container_name: nord-chromium
+    image: linuxserver/chromium:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Stockholm
+    network_mode: "service:nordvpn"
+    shm_size: "500mb"
+    labels:
+      - homepage.group=Home
+      - homepage.name=Chromium
+      - homepage.icon=chromium.png
+      - homepage.href=${{ HREF }}
+      - vpn.app.name=chromium
+      - vpn.app.port=3000
+
+  prowlarr-nord:
+    container_name: nord-prowlarr
+    image: linuxserver/prowlarr:latest
+    env_file: .env
+    network_mode: "service:nordvpn"
+    volumes:
+      - ${CONFIG}/prowlarr:/config
+    labels:
+      - homepage.group=Video
+      - homepage.name=Prowlarr
+      - homepage.icon=prowlarr.png
+      - homepage.href=${{ HREF }}
+      - vpn.app.name=prowlarr
+      - vpn.app.port=9696
+  
+  torrent-nord:
+    container_name: nord-torrent
+    image: ghcr.io/hotio/qbittorrent:latest
+    network_mode: "service:nordvpn"
+    environment:
+      - PUID=1000
+      - PGIG=1000
+      - TZ=Europe/Stockholm
+      - WEBUI_PORT=8080 
+    volumes:
+      - /home/jalvare/media/video:/video:rw
+      - ${CONFIG}/qbittorrent:/config:rw
+      - ${DOWNLOADS}:/downloads:rw
+      - ${BOOKS}:/books:rw
+    labels:
+      - homepage.group=Video
+      - homepage.name=qBittorrent
+      - homepage.icon=qbittorrent.png
+      - homepage.href=${{ HREF }}
+      - vpn.app.name=qbittorrent
+      - vpn.app.port=8080

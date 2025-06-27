@@ -21,5 +21,5 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
-      - "REDIS_ADDR=${HOST_IP}:6379"
-      - "BIND_IP=${HOST_IP}"
+      - "REDIS_ADDR=10.27.17.101:6379"
+      - "BIND_IP=10.27.17.101"

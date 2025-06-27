@@ -1,0 +1,35 @@
+---
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Stockholm
+      - DOCKER_MODS=linuxserver/mods:universal-calibre #optional
+      - OAUTHLIB_RELAX_TOKEN_SCOPE=1 #optional
+    volumes:
+      - ${CONFIG}/calibre-web:/config
+      - ${CONFIG}/calibre:/calibre:ro
+      - ${BOOKS}:/books
+    ports:
+      - 8083:8083
+    restart: unless-stopped
+
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Stockholm
+    volumes:
+      - ${CONFIG}/calibre:/config
+      - ${BOOKS}:/books
+    ports:
+      - 9090:8080
+      - 8181:8181
+      - 8081:8081
+    restart: unless-stopped    
+...

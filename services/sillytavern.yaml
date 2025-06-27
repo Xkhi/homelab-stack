@@ -1,0 +1,34 @@
+name: sillytavern
+services:
+  sillytavern:
+    container_name: sillytavern
+    image: ghcr.io/sillytavern/sillytavern:latest
+    hostname: sillytavern
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    environment:
+      - NODE_ENV=production
+      - FORCE_COLOR=1
+    networks:
+      - localnet
+    volumes:
+      - ${CONFIG}/sillytavern/config:/home/node/app/config
+      - ${CONFIG}/sillytavern/data:/home/node/app/data
+      - ${CONFIG}/sillytavern/plugins:/home/node/app/plugins
+      - ${CONFIG}/sillytavern/extensions:/home/node/app/public/scripts/extensions/third-party
+    labels:
+       # Traefik Setup
+      - traefik.enable=true
+      # Local access
+      - traefik.http.routers.tavern-local.rule=Host(`tavern.pi.home`)
+      - traefik.http.routers.tavern-local.tls=true
+      # Homepage setup
+      - homepage.group=Misc
+      - homepage.name=Sillytavern
+      - homepage.icon=sillytavern.png
+      - homepage.href=https://tavern.pi.home
+      
+networks:
+  localnet:
+    external: true

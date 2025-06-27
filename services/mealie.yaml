@@ -1,23 +1,24 @@
 ---
 services:
   mealie:
-    image: ghcr.io/mealie-recipes/mealie:v2.2.0
+    image: docker.io/hkotel/mealie:latest
     container_name: mealie
-    networks:
-      - localnet
+    hostname: mealie
     depends_on: 
       - mealie-db
     ports:
-        - 9000:9000
+      - "9000:9000"
     volumes:
       - mealie-data:/app/data/
-    env_file: ../environment.env
     environment:
     # Set Backend ENV Variables Here
       - ALLOW_SIGNUP=true
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Stockholm
       - MAX_WORKERS=1
       - WEB_CONCURRENCY=1
-      - BASE_URL=https://mealie.${FQDN}
+      - BASE_URL=https://mealie.pi.home
     # Database settings
       - DB_ENGINE=postgres
       - POSTGRES_USER=mealie
@@ -25,26 +26,20 @@ services:
       - POSTGRES_SERVER=mealie-db
       - POSTGRES_PORT=5432
       - POSTGRES_DB=mealie
-
     restart: unless-stopped
     labels:
-      # Traefik Setup
-      - traefik.enable=true
-      - traefik.http.routers.mealie.rule=Host(`mealie.${FQDN}`)  || Host(`mealie.${VPN}`)
-      - traefik.http.routers.mealie.tls=true
-      - traefik.http.routers.mealie.tls.certresolver=default
       # Homepage setup
       - homepage.group=Home
       - homepage.name=Mealie
       - homepage.icon=mealie.png
-      - homepage.href=https://mealie.${FQDN}/
+      - homepage.href=${{ HREF }}
+      - vpn.app.name=mealie
+      - vpn.app.port=9000
 
   mealie-db:
     image: postgres:16-alpine
     container_name: mealie-db
     restart: unless-stopped
-    networks:
-      - localnet
     volumes:
       - mealie-dbdata:/var/lib/postgresql/data
     environment:
@@ -53,6 +48,6 @@ services:
 
 volumes:
   mealie-data:
-    name: docker-compose_mealie-data
+    name: mealie-data
   mealie-dbdata:
-    name: docker-compose_mealie-dbdata
+    name: mealie-dbdata

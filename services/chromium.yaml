@@ -10,10 +10,15 @@ services:
       - PGID=1000
       - TZ=Europe/Stockholm
       - CHROME_CLI=https://www.linuxserver.io/ #optional
-    volumes:
-      - ${CONFIG}/chromium:/config
+        #    volumes:
+        #      - ${CONFIG}/chromium:/config
     ports:
       - 3000:3000
       - 3030:3001
     shm_size: "1gb"
     restart: unless-stopped
+    labels:
+      - homepage.group=Home
+      - homepage.name=Chrome
+      - homepage.icon=chromium.png
+      - homepage.href=${{ HREF }}

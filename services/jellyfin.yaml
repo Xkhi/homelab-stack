@@ -1,0 +1,34 @@
+---
+name: jellyfin
+services:
+  jellyfin:
+    image: linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    ports:
+      - 8096:8096
+      - 8920:8920 #optional
+      - 7359:7359/udp #optional
+      - 1900:1900/udp #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Stockholm
+      - JELLYFIN_PublishedServerUrl=https://jellyfin.mentita.men
+    volumes:
+      - ${CONFIG}/jellyfin:/config:rw
+      - ${ANIME}:/anime
+      - ${MOVIES}:/movies
+      - ${MVS}:/musicvids
+      - ${SHOWS}:/tv
+      - ${BOOKS}:/books
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    labels:
+      # Homepage
+      - homepage.group=Video
+      - homepage.name=Jellyfin
+      - homepage.href=http://jellyfin.mentita.men
+      - homepage.icon=jellyfin.png
+      - vpn.app.name=jellyfin
+      - vpn.app.port=8096

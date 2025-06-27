@@ -1,4 +1,5 @@
 ---
+name: adguardhome
 services:
   adguardhome:
     container_name: adguardhome
@@ -11,12 +12,13 @@ services:
       - homepage.group=Network & System
       - homepage.name=AdGuardHome
       - homepage.icon=adguard-home.png
-      - homepage.href=http://adguard.${FQDN}/
+      - homepage.href=http://adguard.pi.home/
       - homepage.widget.type=adguard
-      - homepage.widget.url=http://${HOST_IP}:80
-      - homepage.widget.username=${ADMIN_USER}
-      - homepage.widget.password=${ADMIN_PASSWORD}
+      - homepage.widget.url=http://10.27.17.100:80
+      - homepage.widget.username=admin
+      - homepage.widget.password=adminadmin
 
 volumes:
   adguard:
     name: adguard
+    external: true

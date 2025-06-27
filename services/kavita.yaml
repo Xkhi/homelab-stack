@@ -1,0 +1,23 @@
+services:
+  kavita:
+    image: jvmilazz0/kavita:latest
+    container_name: kavita
+    networks:
+      - localnet
+    volumes:
+        - ${BOOKS}:/content/books:rw
+        - ${CONFIG}/kavita:/kavita/config
+    ports:
+        - "5000:5000"
+    restart: unless-stopped
+    labels:
+      # Traefik Setup
+      - traefik.enable=true
+      - traefik.http.routers.kavita.rule=Host(`kavita.pi.home`)
+      - traefik.http.routers.kavita.tls=true
+      - traefik.http.routers.kavita.tls.certresolver=default
+      # Homepage setup
+      - homepage.group=Home
+      - homepage.name=Kavita
+      - homepage.icon=kavita.png
+      - homepage.href=https://kavita.pi.home
