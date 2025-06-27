@@ -14,7 +14,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Stockholm
-      - JELLYFIN_PublishedServerUrl=https://jellyfin.mentita.men
+      - JELLYFIN_PublishedServerUrl=${{ HREF }}
     volumes:
       - ${CONFIG}/jellyfin:/config:rw
       - ${ANIME}:/anime
@@ -28,7 +28,7 @@ services:
       # Homepage
       - homepage.group=Video
       - homepage.name=Jellyfin
-      - homepage.href=http://jellyfin.mentita.men
+      - homepage.href=${{ HREF }}
       - homepage.icon=jellyfin.png
       - vpn.app.name=jellyfin
       - vpn.app.port=8096
