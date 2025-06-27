@@ -22,7 +22,7 @@ services:
       - homepage.group=Network & System
       - homepage.name=NPM
       - homepage.icon=nginx-proxy-manager.png
-      - homepage.href=http://npm.mentita.men/
+      - homepage.href=${{ HREF }}
       - vpn.app.name=nginx-proxy-manager
       - vpn.app.port=81
 
