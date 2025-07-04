@@ -5,7 +5,7 @@ services:
     container_name: ts-nginx-test
     hostname: nginx-test
     environment:
-      - TS_AUTHKEY=tskey-auth-kbj4X9L57311CNTRL-43u1i1ZJwfirK4C6KVWFgitziRrPCep9F
+      - TS_AUTHKEY={{}}
       - TS_STATE_DIR=/var/lib/tailscale
     volumes:
       - ts-alpine:/var/lib/tailscale
